@@ -30,6 +30,7 @@ module.exports = function (options) {
     var authFilePath = options.authFile || '.ftppass';
     var authFile=path.join('./',authFilePath);
     if(options.authKey && fs.existsSync(authFile)){
+        gutil.log('Reading authentication informations : ' + authFile);
         var auth = JSON.parse(fs.readFileSync(authFile,'utf8'))[options.authKey];
         if(!auth)
             this.emit('error', new gutil.PluginError('gulp-sftp', 'Could not find authkey in .ftppass'));
@@ -38,6 +39,8 @@ module.exports = function (options) {
             auth = {user:authparts[0],pass:authparts[1]};
         }
         for (var attr in auth) { options[attr] = auth[attr]; }
+    } else {
+        gutil.log("No options.authKey or authFile don't exist : " + authFile);
     }
 
     //option aliases
